@@ -10,7 +10,8 @@ app.use(express.json());
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-const openai = new OpenAI({ apiKey: 'YOUR_API_KEY' });
+// IMPORTANT: Replace 'YOUR_API_KEY' with your environment variable for security
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 app.post('/edit', upload.single('file'), async (req, res) => {
   const prompt = req.body.prompt;
@@ -30,6 +31,11 @@ app.post('/edit', upload.single('file'), async (req, res) => {
 
   res.setHeader('Content-Type', 'application/pdf');
   res.send(updatedPdf);
+});
+
+// Add health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
 });
 
 app.listen(3001, () => console.log('Server running on http://localhost:3001'));
